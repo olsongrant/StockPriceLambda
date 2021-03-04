@@ -12,10 +12,11 @@ import java.util.Map;
 /**
  * Handler for requests to Lambda function.
  */
-public class StockPriceHandler implements RequestHandler<Map<String, String>, GatewayResponse> {
+public class StockPriceHandler implements RequestHandler<Object, Object> {
  
 
-    public GatewayResponse handleRequest(final Map<String, String> event, final Context context) {
+    public Object handleRequest(final Object input, final Context context) {
+        Map<String, String> event = (Map<String, String>) input;
         LambdaLogger logger = context.getLogger();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
