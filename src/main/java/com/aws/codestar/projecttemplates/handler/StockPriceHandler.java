@@ -12,10 +12,10 @@ import java.util.Map;
 /**
  * Handler for requests to Lambda function.
  */
-public class StockPriceHandler implements RequestHandler<Object, Object> {
+public class StockPriceHandler implements RequestHandler<Map<String, String>, GatewayResponse> {
  
 
-    public Object handleRequest(final Object input, final Context context) {
+    public GatewayResponse handleRequest(final Map<String, String> event, final Context context) {
         LambdaLogger logger = context.getLogger();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
@@ -24,10 +24,10 @@ public class StockPriceHandler implements RequestHandler<Object, Object> {
         logger.log("CONTEXT: " + new JSONObject(context));
         // process event
         JSONObject contentObject = new JSONObject();
-        contentObject.put("EVENT-TOSTRING", new JSONObject(input));
-        logger.log("EVENT: " + new JSONObject(input));
-        contentObject.put("EVENT-CLASS", input.getClass().toString());
-        logger.log("EVENT TYPE: " + input.getClass().toString());
+        contentObject.put("EVENT-TOSTRING", new JSONObject(event));
+        logger.log("EVENT: " + new JSONObject(event));
+        contentObject.put("EVENT-CLASS", event.getClass().toString());
+        logger.log("EVENT TYPE: " + event.getClass().toString());
         contentObject.put("Message", "Lovely Peasants!");
         return new GatewayResponse(contentObject.toString(), headers, 200);
     }

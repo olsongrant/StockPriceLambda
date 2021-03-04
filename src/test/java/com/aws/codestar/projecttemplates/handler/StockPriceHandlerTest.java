@@ -6,9 +6,11 @@ import com.aws.codestar.projecttemplates.GatewayResponse;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,16 +26,16 @@ public class StockPriceHandlerTest {
 
     // A mock class for com.amazonaws.services.lambda.runtime.Context
     private final MockLambdaContext mockLambdaContext = new MockLambdaContext();
-    private final Object input = new Object();
+    private final LinkedHashMap<String, String> event = new LinkedHashMap<>();
 
     /**
      * Initializing variables before we run the tests.
      * Use @BeforeAll for initializing static variables at the start of the test class execution.
      * Use @BeforeEach for initializing variables before each test is run.
      */
-    @BeforeAll
-    static void setup() {
-        // Use as needed.
+    @BeforeEach
+    void setup() {
+        event.put("ticker", "NFLX");
     }
 
     /**
@@ -52,7 +54,7 @@ public class StockPriceHandlerTest {
     @Test
     @DisplayName("Basic test for request handler")
     void testHandleRequest() {
-        GatewayResponse response = (GatewayResponse) new StockPriceHandler().handleRequest(input, mockLambdaContext);
+        GatewayResponse response = (GatewayResponse) new StockPriceHandler().handleRequest(event, mockLambdaContext);
 
         // Verify the response obtained matches the values we expect.
         JSONObject jsonObjectFromResponse = new JSONObject(response.getBody());
