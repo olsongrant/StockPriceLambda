@@ -24,11 +24,28 @@ public class StockPriceHandler implements RequestHandler<Map<String, String>, Ga
         logger.log("CONTEXT: " + new JSONObject(context));
         // process event
         JSONObject contentObject = new JSONObject();
-        contentObject.put("EVENT-TOSTRING", new JSONObject(event));
-        logger.log("EVENT: " + new JSONObject(event));
+        JSONObject eventJSON = this.inspectEventContents(event, logger);
+        contentObject.put("EVENT-TOSTRING", eventJSON);
+        logger.log("EVENT: " + eventJSON);
         contentObject.put("EVENT-CLASS", event.getClass().toString());
         logger.log("EVENT TYPE: " + event.getClass().toString());
         contentObject.put("Message", "Lovely Peasants!");
         return new GatewayResponse(contentObject.toString(), headers, 200);
+    }
+    
+    private JSONObject inspectEventContents(Map<String, String> contentsMap, LambdaLogger logger) {
+        JSONObject viewables = new JSONObject();
+        for (String aKey: contentsMap.keySet()) {
+            try {
+                Object val = contentsMap.get(aKey);
+                logger.log("Event key: " + aKey + " value: " + val);
+                viewables.put(aKey, val);
+            } catch (Exception e) {
+                logger.log("Exception when looking at map key " + aKey);
+                logger.log(e.getMessage());
+                System.out.println(e);
+            }
+        }
+        return viewables;
     }
 }
