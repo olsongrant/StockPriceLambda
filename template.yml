@@ -24,10 +24,10 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
-  GetHelloWorld:
+  GetStockPrice:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub 'awscodestar-${ProjectId}-lambda-GetHelloWorld'
+      FunctionName: !Sub 'awscodestar-${ProjectId}-lambda-GetStockPrice'
       Handler: com.aws.codestar.projecttemplates.handler.StockPriceHandler
       Runtime: java11
       Role:
@@ -41,10 +41,10 @@ Resources:
             Path: /
             Method: get
 
-  PostHelloWorld:
+  PostStockPrice:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub 'awscodestar-${ProjectId}-lambda-PostHelloWorld'
+      FunctionName: !Sub 'awscodestar-${ProjectId}-lambda-PostStockPrice'
       Handler: com.aws.codestar.projecttemplates.handler.StockPriceHandler
       Runtime: java11
       Role:
