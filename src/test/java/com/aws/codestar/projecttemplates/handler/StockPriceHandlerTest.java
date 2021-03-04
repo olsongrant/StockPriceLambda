@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests for {@link HelloWorldHandler}. Modify the tests in order to support your use case as you build your project.
+ * Tests for {@link StockPriceHandler}. Modify the tests in order to support your use case as you build your project.
  */
-@DisplayName("Tests for HelloWorldHandler")
-public class HelloWorldHandlerTest {
+@DisplayName("Tests for StockPriceHandler")
+public class StockPriceHandlerTest {
 
     private static final String EXPECTED_CONTENT_TYPE = "application/json";
     private static final String EXPECTED_RESPONSE_VALUE = "Lovely Peasants!";
@@ -47,12 +47,12 @@ public class HelloWorldHandlerTest {
     }
 
     /**
-     * Basic test to verify the result obtained when calling {@link HelloWorldHandler} successfully.
+     * Basic test to verify the result obtained when calling {@link StockPriceHandler} successfully.
      */
     @Test
     @DisplayName("Basic test for request handler")
     void testHandleRequest() {
-        GatewayResponse response = (GatewayResponse) new HelloWorldHandler().handleRequest(input, mockLambdaContext);
+        GatewayResponse response = (GatewayResponse) new StockPriceHandler().handleRequest(input, mockLambdaContext);
 
         // Verify the response obtained matches the values we expect.
         JSONObject jsonObjectFromResponse = new JSONObject(response.getBody());
