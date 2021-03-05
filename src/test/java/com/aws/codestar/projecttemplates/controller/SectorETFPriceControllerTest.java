@@ -1,4 +1,4 @@
-package com.aws.codestar.projecttemplates.service;
+package com.aws.codestar.projecttemplates.controller;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,27 +12,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Map;
 import java.util.List;
 
-@DisplayName("Test for the BigChartsQuoteService")
-public class BigChartsQuoteServiceTest {
+import org.json.JSONObject;
+
+@DisplayName("Test for the SectorETFPriceController")
+public class SectorETFPriceControllerTest {
     
     // A mock class for com.amazonaws.services.lambda.runtime.Context
     private final MockLambdaContext mockLambdaContext = new MockLambdaContext();
     
-    private BigChartsQuoteService quoteService;
+    private SectorETFPriceController controller;
     
     private LambdaLogger logger;
     
     @BeforeEach
     public void setup() {
         this.logger = this.mockLambdaContext.getLogger();
-        this.quoteService = new BigChartsQuoteService();
+        this.controller = new SectorETFPriceController();
+        
     }
     
     @Test
-    @DisplayName("Basic test for quote service")
-    void testBasicQuotePull() {
-        
-        Map<String, Float> priceMap = this.quoteService.pricesForSymbols(List.of("IBM", "QQQ"), this.logger);
-        assertEquals(priceMap.size(), 2);
+    @DisplayName("Basic test for the sector ETF controller")
+    void testSectorETFPull() {
+        JSONObject pricesJSON = this.controller.getSectorPrices(this.logger); 
+        System.out.println(pricesJSON);
+        assertEquals(pricesJSON.length(), 11);
     }
 }

@@ -9,10 +9,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aws.codestar.projecttemplates.controller.SectorETFPriceController;
+
 /**
  * Handler for requests to Lambda function.
  */
 public class StockPriceHandler implements RequestHandler<Object, Object> {
+    
+    private static SectorETFPriceController controller = new SectorETFPriceController();
  
 
     public Object handleRequest(final Object input, final Context context) {
@@ -26,12 +30,13 @@ public class StockPriceHandler implements RequestHandler<Object, Object> {
         // process event
         JSONObject contentObject = new JSONObject();
         JSONObject eventJSON = this.inspectEventContents(event, logger);
-        contentObject.put("EVENT-TOSTRING", eventJSON);
+//        contentObject.put("EVENT-TOSTRING", eventJSON);
         logger.log("EVENT: " + eventJSON);
-        contentObject.put("EVENT-CLASS", event.getClass().toString());
+//        contentObject.put("EVENT-CLASS", event.getClass().toString());
         logger.log("EVENT TYPE: " + event.getClass().toString());
-        contentObject.put("Message", "Lovely Peasants!");
-        return new GatewayResponse(contentObject.toString(), headers, 200);
+        JSONObject pricesObject = StockPriceHandler.controller.getSectorPrices(logger);
+//        contentObject.put("PRICES", pricesObject);
+        return new GatewayResponse(pricesObject.toString(), headers, 200);
     }
     
     private JSONObject inspectEventContents(Map<String, String> contentsMap, LambdaLogger logger) {
