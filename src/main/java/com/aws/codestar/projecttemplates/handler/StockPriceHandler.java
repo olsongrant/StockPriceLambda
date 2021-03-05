@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.net.URL;
+import java.net.HttpURLConnection;
+
 import com.aws.codestar.projecttemplates.controller.SectorETFPriceController;
 
 /**
@@ -34,6 +37,11 @@ public class StockPriceHandler implements RequestHandler<Object, Object> {
         logger.log("EVENT: " + eventJSON);
 //        contentObject.put("EVENT-CLASS", event.getClass().toString());
         logger.log("EVENT TYPE: " + event.getClass().toString());
+        if (!this.checkOutgoingConnectivity(logger)) {
+            JSONObject connectionProblem = new JSONObject();
+            connectionProblem.put("OUTGOING_CONNECTION_TEST", "Failed");
+            return new GatewayResponse(connectionProblem.toString(), headers, 200);
+        }
         JSONObject pricesObject = StockPriceHandler.controller.getSectorPrices(logger);
 //        contentObject.put("PRICES", pricesObject);
         return new GatewayResponse(pricesObject.toString(), headers, 200);
@@ -53,5 +61,18 @@ public class StockPriceHandler implements RequestHandler<Object, Object> {
             }
         }
         return viewables;
+    }
+    
+    private boolean checkOutgoingConnectivity(LambdaLogger logger) {
+        try {
+            URL urlObj = new URL("https://jsonplaceholder.typicode.com/users");
+            HttpURLConnection httpCon = (HttpURLConnection) urlObj.openConnection();
+            int responseCode = httpCon.getResponseCode();
+            logger.log("response code from URL check in checkOutgoingConnectivity: " + responseCode);
+            return (responseCode > 0) ? true : false;
+        } catch (Exception e) {
+            logger.log(e.getMessage());
+            return false;
+        }
     }
 }

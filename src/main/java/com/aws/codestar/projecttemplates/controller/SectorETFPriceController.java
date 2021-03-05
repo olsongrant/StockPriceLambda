@@ -30,6 +30,7 @@ public class SectorETFPriceController {
 	}
 	
 	public JSONObject getSectorPrices(LambdaLogger logger) {
+	    logger.log("SectorETFPriceController::getSectorPrices invoked");
         Map<String, Float> priceMap = this.quoteService.pricesForSymbols(SYMBOL_LIST, logger);
         JSONObject pricesJSON = new JSONObject();
         for (String key: priceMap.keySet()) {
@@ -41,6 +42,7 @@ public class SectorETFPriceController {
             }
             
         }
+        logger.log("About to return from SectorETFPriceController::getSectorPrices");
         return pricesJSON;
 	}
 	

@@ -25,34 +25,38 @@ public class BigChartsQuoteService {
         super();
     }
     
-   	protected Document documentForSymbol(String symbolList, LambdaLogger log) {
+   	protected Document documentForSymbol(String symbolList, LambdaLogger logger) {
+   	    logger.log("BigChartsQuoteService::documentForSymbol entered");
 		String url = BigChartsQuoteService.BASE_URL_STRING + symbolList;
 		Document doc = null;
 		try {
+		    logger.log("About to invoke URL " + url);
 			doc = Jsoup.connect(url).get();
-			log.log("Title: " + doc.title());
+			logger.log("Title: " + doc.title());
 		} catch (IOException e) {
-            log.log(e.getMessage());
+            logger.log(e.getMessage());
 			e.printStackTrace();
 		}
+		logger.log("exiting BigChartsQuoteService::documentForSymbol");
 		return doc;
 	}
 	
-	public Map<String, Float> pricesForSymbols(List<String> aSymbolList, LambdaLogger log) {
+	public Map<String, Float> pricesForSymbols(List<String> aSymbolList, LambdaLogger logger) {
+	    logger.log("entering BigChartsQuoteService::pricesForSymbols");
 		HashMap<String, Float> priceMap = new HashMap<>();
 		List<String> symbols = List.copyOf(aSymbolList);
 		String joinedSymbols = symbols.stream().collect(Collectors.joining("+"));
-		log.log("joined symbol list: " + joinedSymbols);
-		Document doc = this.documentForSymbol(joinedSymbols, log);
+		logger.log("joined symbol list: " + joinedSymbols);
+		Document doc = this.documentForSymbol(joinedSymbols, logger);
 		Elements elements = doc.getElementsByClass("multiquote quick");
 		if (elements.size() < 1) { 
-			log.log("no 'multiquote quick' elements");
+			logger.log("no 'multiquote quick' elements");
 			return null;
 		}		
 		Element ourTable = elements.first();
 		Elements tbodies = ourTable.getElementsByTag("tbody");
 		if (tbodies.size() < 1) {
-			log.log("no tbody elements!");
+			logger.log("no tbody elements!");
 			return null;
 		}
 		Element tbody = tbodies.first();
@@ -62,14 +66,14 @@ public class BigChartsQuoteService {
 			Element trElement = trElements.next();
 			Elements symbColElements = trElement.getElementsByClass("symb-col");
 			if (symbColElements.size() < 1) {
-				log.log("looked for symb-col class element in a tr element, but did not find.");
+				logger.log("looked for symb-col class element in a tr element, but did not find.");
 				continue;
 			}
 			Element tdSymbolElement = symbColElements.first();
 			String symbol = tdSymbolElement.text();
 			Elements lastColElements = trElement.getElementsByClass("last-col");
 			if (lastColElements.size() < 1) {
-				log.log("looked for last-col class element in a tr element, but did not find.");
+				logger.log("looked for last-col class element in a tr element, but did not find.");
 				continue;
 			}
 			Element lastColElement = lastColElements.first();
@@ -78,6 +82,7 @@ public class BigChartsQuoteService {
 			Float lastPrice = Float.valueOf(lastPriceString);
 			priceMap.put(symbol, lastPrice);
 		}
+		logger.log("Exiting BigChartsQuoteService::pricesForSymbols");
 		return priceMap;
 	}
 }
